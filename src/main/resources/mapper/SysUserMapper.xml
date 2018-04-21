@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mmall.dao.SysUserMapper" >
+  <resultMap id="BaseResultMap" type="com.mmall.model.SysUser" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="user_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="user_telephone" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="user_email" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="user_password" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="dept_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="user_status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="operator" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="operate_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="operator_ip" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_name, user_telephone, user_email, user_password, dept_id, user_status, remark, 
+    operator, create_time, operate_time, operator_ip
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from mmall_sys_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mmall_sys_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mmall.model.SysUser" >
+    insert into mmall_sys_user (id, user_name, user_telephone, 
+      user_email, user_password, dept_id, 
+      user_status, remark, operator, 
+      create_time, operate_time, operator_ip
+      )
+    values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userTelephone,jdbcType=VARCHAR}, 
+      #{userEmail,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR}, #{deptId,jdbcType=INTEGER}, 
+      #{userStatus,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{operateTime,jdbcType=TIMESTAMP}, #{operatorIp,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.mmall.model.SysUser" >
+    insert into mmall_sys_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="userTelephone != null" >
+        user_telephone,
+      </if>
+      <if test="userEmail != null" >
+        user_email,
+      </if>
+      <if test="userPassword != null" >
+        user_password,
+      </if>
+      <if test="deptId != null" >
+        dept_id,
+      </if>
+      <if test="userStatus != null" >
+        user_status,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="operateTime != null" >
+        operate_time,
+      </if>
+      <if test="operatorIp != null" >
+        operator_ip,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userTelephone != null" >
+        #{userTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null" >
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null" >
+        #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null" >
+        #{deptId,jdbcType=INTEGER},
+      </if>
+      <if test="userStatus != null" >
+        #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operateTime != null" >
+        #{operateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operatorIp != null" >
+        #{operatorIp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mmall.model.SysUser" >
+    update mmall_sys_user
+    <set >
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userTelephone != null" >
+        user_telephone = #{userTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null" >
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null" >
+        user_password = #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null" >
+        dept_id = #{deptId,jdbcType=INTEGER},
+      </if>
+      <if test="userStatus != null" >
+        user_status = #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operateTime != null" >
+        operate_time = #{operateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operatorIp != null" >
+        operator_ip = #{operatorIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mmall.model.SysUser" >
+    update mmall_sys_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      user_telephone = #{userTelephone,jdbcType=VARCHAR},
+      user_email = #{userEmail,jdbcType=VARCHAR},
+      user_password = #{userPassword,jdbcType=VARCHAR},
+      dept_id = #{deptId,jdbcType=INTEGER},
+      user_status = #{userStatus,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      operate_time = #{operateTime,jdbcType=TIMESTAMP},
+      operator_ip = #{operatorIp,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

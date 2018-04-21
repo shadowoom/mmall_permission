@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!--导入属性配置-->
+    <properties resource="datasource.properties"></properties>
+
+    <!-- 数据库驱动包位置 -->
+    <classPathEntry location="${db.driverLocation}"/>
+
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+
+        <!-- 数据库链接URL、用户名、密码 -->
+        <jdbcConnection
+                driverClass="${db.driverClassName}"
+                connectionURL="${db.url}"
+                userId="${db.username}"
+                password="${db.password}">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!-- 生成模型的包名和位置 -->
+        <javaModelGenerator targetPackage="com.mmall.model" targetProject="./src/main/java">
+            <!-- 是否允许子包，即targetPackage.schemaName.tableName -->
+            <property name="enableSubPackages" value="false"/>
+            <!-- 是否对model添加 构造函数 -->
+            <property name="constructorBased" value="true"/>
+            <!-- 是否对类CHAR类型的列的数据进行trim操作 -->
+            <property name="trimStrings" value="true"/>
+            <!-- 建立的Model对象是否 不可改变  即生成的Model对象不会有 setter方法，只有构造方法 -->
+            <property name="immutable" value="false"/>
+        </javaModelGenerator>
+
+        <!-- 生成的映射文件包名和位置 -->
+        <sqlMapGenerator targetPackage="mapper" targetProject="./src/main/resources">
+            <property name="enableSubPackages" value="false" />
+        </sqlMapGenerator>
+
+        <!-- 生成DAO的包名和位置 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.mmall.dao" targetProject="./src/main/java">
+            <property name="enableSubPackages" value="false" />
+        </javaClientGenerator>
+
+        <!-- 要生成那些表(更改tableName和domainObjectName就可以) -->
+        <table tableName="mmall_sys_user" domainObjectName="SysUser" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="mmall_sys_dept" domainObjectName="SysDept" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="mmall_sys_permission" domainObjectName="SysPermission" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="mmall_sys_permission_module" domainObjectName="SysPermissionModule" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="mmall_sys_role" domainObjectName="SysRole" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="mmall_sys_role_permission" domainObjectName="SysRolePermission" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="mmall_sys_role_user" domainObjectName="SysRoleUser" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="mmall_sys_log" domainObjectName="SysLog" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+    </context>
+</generatorConfiguration>

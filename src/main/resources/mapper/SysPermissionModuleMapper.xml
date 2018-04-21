@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mmall.dao.SysPermissionModuleMapper" >
+  <resultMap id="BaseResultMap" type="com.mmall.model.SysPermissionModule" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="permission_module_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="parent_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="permission_module_level" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="permission_module_seq" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="permission_module_status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="operator" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="operate_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="operator_ip" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, permission_module_name, parent_id, permission_module_level, permission_module_seq, 
+    permission_module_status, remark, operator, create_time, operate_time, operator_ip
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from mmall_sys_permission_module
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mmall_sys_permission_module
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mmall.model.SysPermissionModule" >
+    insert into mmall_sys_permission_module (id, permission_module_name, parent_id, 
+      permission_module_level, permission_module_seq, 
+      permission_module_status, remark, operator, 
+      create_time, operate_time, operator_ip
+      )
+    values (#{id,jdbcType=INTEGER}, #{permissionModuleName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, 
+      #{permissionModuleLevel,jdbcType=VARCHAR}, #{permissionModuleSeq,jdbcType=INTEGER}, 
+      #{permissionModuleStatus,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{operateTime,jdbcType=TIMESTAMP}, #{operatorIp,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.mmall.model.SysPermissionModule" >
+    insert into mmall_sys_permission_module
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="permissionModuleName != null" >
+        permission_module_name,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="permissionModuleLevel != null" >
+        permission_module_level,
+      </if>
+      <if test="permissionModuleSeq != null" >
+        permission_module_seq,
+      </if>
+      <if test="permissionModuleStatus != null" >
+        permission_module_status,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="operateTime != null" >
+        operate_time,
+      </if>
+      <if test="operatorIp != null" >
+        operator_ip,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="permissionModuleName != null" >
+        #{permissionModuleName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="permissionModuleLevel != null" >
+        #{permissionModuleLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionModuleSeq != null" >
+        #{permissionModuleSeq,jdbcType=INTEGER},
+      </if>
+      <if test="permissionModuleStatus != null" >
+        #{permissionModuleStatus,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operateTime != null" >
+        #{operateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operatorIp != null" >
+        #{operatorIp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mmall.model.SysPermissionModule" >
+    update mmall_sys_permission_module
+    <set >
+      <if test="permissionModuleName != null" >
+        permission_module_name = #{permissionModuleName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="permissionModuleLevel != null" >
+        permission_module_level = #{permissionModuleLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionModuleSeq != null" >
+        permission_module_seq = #{permissionModuleSeq,jdbcType=INTEGER},
+      </if>
+      <if test="permissionModuleStatus != null" >
+        permission_module_status = #{permissionModuleStatus,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operateTime != null" >
+        operate_time = #{operateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operatorIp != null" >
+        operator_ip = #{operatorIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mmall.model.SysPermissionModule" >
+    update mmall_sys_permission_module
+    set permission_module_name = #{permissionModuleName,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      permission_module_level = #{permissionModuleLevel,jdbcType=VARCHAR},
+      permission_module_seq = #{permissionModuleSeq,jdbcType=INTEGER},
+      permission_module_status = #{permissionModuleStatus,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      operate_time = #{operateTime,jdbcType=TIMESTAMP},
+      operator_ip = #{operatorIp,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

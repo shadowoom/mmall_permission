@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Property Configure -->
+    <bean id="propertyConfigure" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="locations">
+            <list>
+                <value>classpath:datasource.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Database Configuration -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${db.driverClassName}" />
+        <property name="url" value="${db.url}" />
+        <property name="username" value="${db.username}" />
+        <property name="password" value="${db.password}" />
+        <!-- 连接池启动时的初始值 -->
+        <property name="initialSize" value="${db.initialSize}"/>
+        <!-- 连接池的最大值 -->
+        <property name="maxActive" value="${db.maxActive}"/>
+        <!-- 最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接，以免洪峰来时来不及申请 -->
+        <property name="minIdle" value="${db.minIdle}"/>
+        <!-- 最大建立连接等待时间。如果超过此时间将接到异常。设为－1表示无限制 -->
+        <property name="maxWait" value="${db.maxWait}"/>
+        <property name="filters" value="${db.filters}" />
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+    </bean>
+
+    <bean name="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.mmall.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean>
+
+    <!-- Transaction Config -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="rollbackOnCommitFailure" value="true"/>
+    </bean>
+    <!-- 使用@Transactional进行声明式事务管理需要声明下面这行 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+    <!-- Druid Config -->
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <property name="slowSqlMillis" value="3000" />
+        <property name="logSlowSql" value="true" />
+        <property name="mergeSql" value="true" />
+    </bean>
+
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <property name="dbType" value="mysql" />
+    </bean>
+
+</beans>
