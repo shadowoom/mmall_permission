@@ -36,6 +36,7 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
 //        long start = (Long) request.getAttribute(START_TIME);
 //        long end = System.currentTimeMillis();
 //        log.info("Post request. url:{}, duration:{}", url, end - start);
+        removeThreadLocalInfo();
     }
 
     @Override
@@ -44,5 +45,11 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
         long start = (Long) request.getAttribute(START_TIME);
         long end = System.currentTimeMillis();
         log.info("Request completed. url:{}, duration:{}", url, end - start);
+
+        removeThreadLocalInfo();
+    }
+
+    public void removeThreadLocalInfo() {
+        RequestHolder.remove();
     }
 }

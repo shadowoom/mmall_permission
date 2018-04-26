@@ -1,7 +1,16 @@
 package com.mmall.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.util.Date;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class SysUser {
     private Integer id;
 
@@ -26,25 +35,6 @@ public class SysUser {
     private Date operateTime;
 
     private String operatorIp;
-
-    public SysUser(Integer id, String userName, String userTelephone, String userEmail, String userPassword, Integer deptId, Integer userStatus, String remark, String operator, Date createTime, Date operateTime, String operatorIp) {
-        this.id = id;
-        this.userName = userName;
-        this.userTelephone = userTelephone;
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
-        this.deptId = deptId;
-        this.userStatus = userStatus;
-        this.remark = remark;
-        this.operator = operator;
-        this.createTime = createTime;
-        this.operateTime = operateTime;
-        this.operatorIp = operatorIp;
-    }
-
-    public SysUser() {
-        super();
-    }
 
     public Integer getId() {
         return id;

@@ -1,7 +1,16 @@
 package com.mmall.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.util.Date;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class SysDept {
     private Integer id;
 
@@ -22,23 +31,6 @@ public class SysDept {
     private Date operateTime;
 
     private String operatorIp;
-
-    public SysDept(Integer id, String deptName, Integer parentId, String deptLevel, Integer deptSeq, String remark, String operator, Date createTime, Date operateTime, String operatorIp) {
-        this.id = id;
-        this.deptName = deptName;
-        this.parentId = parentId;
-        this.deptLevel = deptLevel;
-        this.deptSeq = deptSeq;
-        this.remark = remark;
-        this.operator = operator;
-        this.createTime = createTime;
-        this.operateTime = operateTime;
-        this.operatorIp = operatorIp;
-    }
-
-    public SysDept() {
-        super();
-    }
 
     public Integer getId() {
         return id;

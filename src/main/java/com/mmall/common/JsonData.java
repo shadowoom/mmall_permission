@@ -18,14 +18,14 @@ import java.util.Map;
 @Setter
 public class JsonData {
 
-    private boolean result;
+    private boolean ret;
 
     private String msg;
 
     private Object data;
 
-    public JsonData(boolean result) {
-        this.result = result;
+    public JsonData(boolean ret) {
+        this.ret = ret;
     }
 
     public static JsonData success(Object object, String msg) {
@@ -53,7 +53,7 @@ public class JsonData {
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> resultMap = new HashMap<>();
-        resultMap.put("result", result);
+        resultMap.put("ret", ret);
         resultMap.put("msg", msg);
         resultMap.put("data", data);
         return resultMap;

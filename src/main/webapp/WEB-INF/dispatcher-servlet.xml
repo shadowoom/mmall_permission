@@ -15,6 +15,12 @@
         <bean class="com.mmall.common.HttpInterceptor" />
     </mvc:interceptors>
 
+    <!-- MVC resources -->
+    <mvc:resources mapping="/js/**" location="/js/" />
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <mvc:resources mapping="/bootstrap3.3.5/**" location="/bootstrap3.3.5/" />
+    <mvc:resources mapping="/assets/**" location="/assets/" />
+
     <!-- Component Scan -->
     <context:component-scan base-package="com.mmall.controller" />
     <context:component-scan base-package="com.mmall.service" />
@@ -25,7 +31,7 @@
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
     <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/views/" />
+        <property name="prefix" value="/WEB-INF/views/" />
         <property name="suffix" value=".jsp" />
     </bean>
 

@@ -1,7 +1,16 @@
 package com.mmall.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.util.Date;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class SysPermissionModule {
     private Integer id;
 
@@ -24,24 +33,6 @@ public class SysPermissionModule {
     private Date operateTime;
 
     private String operatorIp;
-
-    public SysPermissionModule(Integer id, String permissionModuleName, Integer parentId, String permissionModuleLevel, Integer permissionModuleSeq, Integer permissionModuleStatus, String remark, String operator, Date createTime, Date operateTime, String operatorIp) {
-        this.id = id;
-        this.permissionModuleName = permissionModuleName;
-        this.parentId = parentId;
-        this.permissionModuleLevel = permissionModuleLevel;
-        this.permissionModuleSeq = permissionModuleSeq;
-        this.permissionModuleStatus = permissionModuleStatus;
-        this.remark = remark;
-        this.operator = operator;
-        this.createTime = createTime;
-        this.operateTime = operateTime;
-        this.operatorIp = operatorIp;
-    }
-
-    public SysPermissionModule() {
-        super();
-    }
 
     public Integer getId() {
         return id;

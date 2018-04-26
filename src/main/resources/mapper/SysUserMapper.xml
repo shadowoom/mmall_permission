@@ -176,4 +176,46 @@
       operator_ip = #{operatorIp,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="findUserByKeyword" parameterType="string" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM mmall_sys_user
+    WHERE user_telephone = #{keyword}
+    OR user_email = #{keyword}
+  </select>
+  
+  <select id="countByMail" parameterType="map" resultType="java.lang.Integer">
+    SELECT COUNT(1)
+    FROM mmall_sys_user
+    WHERE user_email = #{mail}
+    <if test="id != null">
+      AND id != #{id}
+    </if>
+  </select>
+
+  <select id="countByTelephone" parameterType="map" resultType="java.lang.Integer">
+    SELECT COUNT(1)
+    FROM mmall_sys_user
+    WHERE user_telephone = #{telephone}
+    <if test="id != null">
+      AND id != #{id}
+    </if>
+  </select>
+  
+  <select id="countByDeptId" parameterType="int" resultType="java.lang.Integer">
+    SELECT count(1)
+    FROM mmall_sys_user
+    WHERE dept_id = #{deptId}
+  </select>
+
+  <select id="getPageByDeptId" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM mmall_sys_user
+    WHERE dept_id = #{deptId}
+    ORDER BY  user_name ASC
+    LIMIT #{pageQuery.offset}, #{pageQuery.pageSize}
+  </select>
+
 </mapper>
