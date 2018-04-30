@@ -187,4 +187,30 @@
       operator_ip = #{operatorIp,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="countByNameAndPermissionModuleId" parameterType="map" resultType="int">
+    SELECT COUNT(1)
+    FROM mmall_sys_permission
+    WHERE permission_module_id =  #{permissionModuleId}
+    AND permission_name = #{permissionName}
+    <if test="id != null">
+      AND id != #{id}
+    </if>
+  </select>
+  
+  <select id="countByPermissionModuleId" parameterType="map" resultType="int">
+    SELECT COUNT(1)
+    FROM mmall_sys_permission
+    WHERE permission_module_id =  #{permissionModuleId}
+  </select>
+  
+  <select id="getPageByPermissionModuleId" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM mmall_sys_permission
+    WHERE permission_module_id =  #{permissionModuleId}
+    ORDER BY permission_seq ASC, permission_name ASC
+    limit #{page.offset}, #{page.pageSize}
+  </select>
+  
 </mapper>

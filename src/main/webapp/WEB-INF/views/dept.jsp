@@ -505,7 +505,7 @@
                 type: 'POST',
                 success: function(result) {
                     if (result.ret) {
-                        loadDeptTree();
+                        loadUserList(lastClickDeptId);
                         if (successCallback) {
                             successCallback(result);
                         }

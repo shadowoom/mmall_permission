@@ -1,6 +1,10 @@
 package com.mmall.dao;
 
+import com.mmall.beans.PageQuery;
 import com.mmall.model.SysPermission;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface SysPermissionMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +18,13 @@ public interface SysPermissionMapper {
     int updateByPrimaryKeySelective(SysPermission record);
 
     int updateByPrimaryKey(SysPermission record);
+
+    int countByPermissionModuleId(@Param("permissionModuleId") int permissionModuleId);
+
+    List<SysPermission> getPageByPermissionModuleId(@Param("permissionModuleId") int permissionModuleId,
+                                                    @Param("page") PageQuery page);
+
+    int countByNameAndPermissionModuleId(@Param("permissionModuleId") int permissionModuleId,
+                                         @Param("permissionName") String permissionName, @Param("id") Integer id);
+
 }
