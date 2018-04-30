@@ -4,15 +4,14 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.mmall.dao.SysDeptMapper;
+import com.mmall.dao.SysPermissionModuleMapper;
 import com.mmall.dto.DeptLevelDto;
 import com.mmall.model.SysDept;
-import com.mmall.model.SysPermissionModule;
 import com.mmall.util.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,7 +29,7 @@ public class SysTreeService {
     private SysDeptMapper sysDeptMapper;
 
     @Resource
-    private SysPermissionModule sysPermissionModule;
+    private SysPermissionModuleMapper sysPermissionModuleMapper;
 
     // department comparator based on sequence
     private Comparator<DeptLevelDto> deptSeqComparator = new Comparator<DeptLevelDto>() {
