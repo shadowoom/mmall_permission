@@ -112,7 +112,7 @@
                         <b class="arrow"></b>
                     </li>
                     <li class="">
-                        <a class="popstyle" href="/sys/permission/permission.page" target="_blank">
+                        <a class="popstyle" href="/sys/permissionModule/permission.page" target="_blank">
                             <i class="menu-icon fa fa-caret-right"></i>
                             权限管理
                         </a>

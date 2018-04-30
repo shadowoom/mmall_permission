@@ -3,6 +3,7 @@ package com.mmall.controller;
 import com.mmall.common.JsonData;
 import com.mmall.param.PermissionModuleParam;
 import com.mmall.service.SysPermissionModuleService;
+import com.mmall.service.SysTreeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,6 +24,9 @@ public class SysPermissionModuleController {
 
     @Resource
     private SysPermissionModuleService sysPermissionModuleService;
+
+    @Resource
+    private SysTreeService sysTreeService;
 
     @RequestMapping("/permission.page")
     public ModelAndView page() {
@@ -46,7 +50,7 @@ public class SysPermissionModuleController {
     @RequestMapping("/tree.json")
     @ResponseBody
     public JsonData tree() {
-        return JsonData.success();
+        return JsonData.success(sysTreeService.permissionModuleTree());
     }
 
 }

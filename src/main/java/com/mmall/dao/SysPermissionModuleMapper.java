@@ -23,4 +23,6 @@ public interface SysPermissionModuleMapper {
     void batchUpdateLevel(@Param("sysPermissionModuleList")List<SysPermissionModule> sysPermissionModuleList);
 
     int countByNameAndParentId(@Param("parentId")Integer parentId, @Param("permissionModuleName")String permissionModuleName, @Param("id")Integer id);
+
+    List<SysPermissionModule> getAllPermissionModule();
 }

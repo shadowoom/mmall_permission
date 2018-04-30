@@ -230,24 +230,209 @@
         var permissionListTemplate = $('#permissionListTemplate').html();
         Mustache.parse(permissionListTemplate);
 
-        loadPermissionModuleTree(); // load permission module tree
-
+        // load permission module tree
+        loadPermissionModuleTree();
         function loadPermissionModuleTree() {
             $.ajax({
                 url: "/sys/permissionModule/tree.json",
                 success : function (result) {
                     if (result.ret) {
                         permissionModuleList = result.data;
-                        var rendered = Mustache.render(permissionModuleListTemplate, {permissionModuleList: result.data});
+                        var rendered = Mustache.render(permissionModuleListTemplate, {
+                            permissionModuleList: result.data,
+                            "showDownAngle": function() {
+                                return function(text, render) {
+                                    return (this.permissionModuleList && this.permissionModuleList.length > 0) ? "" : "hidden";
+                                }
+                            },
+                            "displayClass": function () {
+                                return "";
+                            }
+                        });
                         $("#permissionModuleList").html(rendered);
-                        recursiveRenderDept(result.data);
-                        bindDeptClick();
+                        recursiveRenderPermissionModule(result.data);
+                        bindPermissionModuleClick();
                     } else {
                         showMessage("加载权限模块列表", result.msg, false);
                     }
                 }
             })
         }
+
+        function recursiveRenderPermissionModule(permissionModuleList) {
+            if(permissionModuleList && permissionModuleList.length > 0) {
+                $(permissionModuleList).each(function(i, permissionModule) {
+                    permissionModuleMap[permissionModule.id] = permissionModule;
+                    if(permissionModule.permissionModuleList && permissionModule.permissionModuleList.length > 0){
+                        var rendered = Mustache.render(permissionModuleListTemplate, {
+                            permissionModuleList: permissionModule.permissionModuleList,
+                            "showDownAngle": function() {
+                                return function(text, render) {
+                                    return (this.permissionModuleList && this.permissionModuleList > 0) ? "" : "hidden";
+                                }
+                            },
+                            "displayClass": function () {
+                                return "hidden";
+                            }
+                        });
+                        $("#permissionModule_" + permissionModule.id).append(rendered);
+                        recursiveRenderPermissionModule(permissionModule.permissionModuleList);
+                    }
+                });
+            }
+        }
+
+        // add a permission module
+
+        $(".permissionModule-add").click(function () {
+            $("#dialog-permissionModule-form").dialog({
+                model: true,
+                title: "新增权限模块",
+                open: function(event, ui) {
+                    $(".ui-dialog-titlebar-close", $(this).parent()).hide();
+                    optionStr = "<option value=\"0\">-</option>";
+                    recursiveRenderPermissionModuleSelect(permissionModuleList, 1);
+                    $("#permissionModuleForm")[0].reset();
+                    $("#parentId").html(optionStr);
+                },
+                buttons : {
+                    "添加": function(e) {
+                        e.preventDefault();
+                        createUpdatePermissionModule(true, function (data) {
+                            $("#dialog-permissionModule-form").dialog("close");
+
+                        }, function (data) {
+                            showMessage("新增权限模块", data.msg, false);
+                        })
+                    },
+                    "取消": function () {
+                        $("#dialog-permissionModule-form").dialog("close");
+                    }
+                }
+            });
+        });
+
+        // recursively render the permission module tree for selection
+        function recursiveRenderPermissionModuleSelect(permissionModuleList, level) {
+            level = level | 0;
+            if (permissionModuleList && permissionModuleList.length > 0) {
+                $(permissionModuleList).each(function (i, permissionModule) {
+                    permissionModuleMap[permissionModule.id] = permissionModule;
+                    var blank = "";
+                    if (level > 1) {
+                        for(var j = 3; j <= level; j++) {
+                            blank += "..";
+                        }
+                        blank += "∟";
+                    }
+                    optionStr += Mustache.render("<option value='{{id}}'>{{name}}</option>", {id: permissionModule.id, name: blank + permissionModule.permissionModuleName});
+                    if (permissionModule.permissionModuleList && permissionModule.permissionModuleList.length > 0) {
+                        recursiveRenderPermissionModuleSelect(permissionModule.permissionModuleList, level + 1);
+                    }
+                });
+            }
+        }
+        
+        function bindPermissionModuleClick() {
+            $(".sub-permissionModule").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).parent().parent().parent().children().children(".permissionModule-name").toggleClass("hidden");
+                if($(this).is(".fa-angle-double-down")) {
+                    $(this).removeClass("fa-angle-double-down").addClass("fa-angle-double-up");
+                }
+                else {
+                    $(this).removeClass("fa-angle-double-up").addClass("fa-angle-double-down");
+                }
+            });
+
+            $(".permissionModule-edit").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var permissionModuleId = $(this).attr("data-id");
+                $("#dialog-permissionModule-form").dialog({
+                    model: true,
+                    title: "编辑权限模块",
+                    open: function(event, ui) {
+                        $(".ui-dialog-titlebar-close", $(this).parent()).hide();
+                        optionStr = "<option value=\"0\">-</option>";
+                        recursiveRenderPermissionModuleSelect(permissionModuleList, 1);
+                        $("#permissionModuleForm")[0].reset();
+                        $("#parentId").html(optionStr);
+                        $("#permissionModuleId").val(permissionModuleId);
+                        var targetPermissionModule = permissionModuleMap[permissionModuleId];
+                        if(targetPermissionModule) {
+                            $("#parentId").val(targetPermissionModule.parentId);
+                            $("#permissionModuleName").val(targetPermissionModule.permissionModuleName);
+                            $("#permissionModuleSeq").val(targetPermissionModule.permissionModuleSeq);
+                            $("#permissionModuleRemark").val(targetPermissionModule.remark);
+                            $("#permissionModuleStatus").val(targetPermissionModule.permissionModuleStatus);
+                        }
+                    },
+                    buttons : {
+                        "更新": function(e) {
+                            e.preventDefault();
+                            createUpdatePermissionModule(false, function (data) {
+                                $("#dialog-permissionModule-form").dialog("close");
+
+                            }, function (data) {
+                                showMessage("编辑权限模块", data.msg, false);
+                            })
+                        },
+                        "取消": function () {
+                            $("#dialog-permissionModule-form").dialog("close");
+                        }
+                    }
+                });
+            });
+
+            $(".permissionModule-name").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var permissionModuleId = $(this).attr("data-id");
+                handlePermissionModuleSelected(permissionModuleId);
+            });
+
+        }
+
+        // update or create a permission module
+        function createUpdatePermissionModule(isCreate, successCallback, failCallback) {
+            $.ajax({
+                url: isCreate ? "/sys/permissionModule/save.json" : "/sys/permissionModule/update.json",
+                data: $("#permissionModuleForm").serializeArray(),
+                type: 'POST',
+                success: function(result) {
+                    if (result.ret) {
+                        loadPermissionModuleTree();
+                        if (successCallback) {
+                            successCallback(result);
+                        }
+                    } else {
+                        if (failCallback) {
+                            failCallback(result);
+                        }
+                    }
+                }
+            });
+        }
+
+        function handlePermissionModuleSelected(permissionModuleId) {
+            if(lastClickPermissionModuleId != -1) {
+                var prevPermissionModule = $("#permissionModule_" + lastClickPermissionModuleId + " .dd2-content:first");
+                prevPermissionModule.removeClass("btn-yellow");
+                prevPermissionModule.removeClass("no-hover");
+            }
+            var currentPermissionModule = $("#permissionModule_" + permissionModuleId + " .dd2-content:first");
+            currentPermissionModule.addClass("btn-yellow");
+            currentPermissionModule.addClass("no-hover");
+            lastClickPermissionModuleId = permissionModuleId;
+            loadPermissionList(permissionModuleId);
+        }
+        
+        function loadPermissionList(permissionModuleId) {
+            console.log(permissionModuleId);
+        }
+        
     })
 
 </script>

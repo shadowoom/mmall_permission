@@ -6,12 +6,15 @@ import com.google.common.collect.Multimap;
 import com.mmall.dao.SysDeptMapper;
 import com.mmall.dao.SysPermissionModuleMapper;
 import com.mmall.dto.DeptLevelDto;
+import com.mmall.dto.PermissionModuleLevelDto;
 import com.mmall.model.SysDept;
+import com.mmall.model.SysPermissionModule;
 import com.mmall.util.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -39,6 +42,63 @@ public class SysTreeService {
         }
     };
 
+    // permission module comparator based on sequence
+    private Comparator<PermissionModuleLevelDto> permissionModuleSeqComparator = new Comparator<PermissionModuleLevelDto>() {
+        @Override
+        public int compare(PermissionModuleLevelDto o1, PermissionModuleLevelDto o2) {
+            return o1.getPermissionModuleSeq() - o2.getPermissionModuleSeq();
+        }
+    };
+
+    // generate permission module tree
+    public List<PermissionModuleLevelDto> permissionModuleTree() {
+        List<SysPermissionModule> permissionModuleList = sysPermissionModuleMapper.getAllPermissionModule();
+        List<PermissionModuleLevelDto> dtoList = Lists.newArrayList();
+        for(SysPermissionModule permissionModule : permissionModuleList) {
+            dtoList.add(PermissionModuleLevelDto.adapt(permissionModule));
+        }
+        return permissionModuleListToTree(dtoList);
+    }
+
+    public List<PermissionModuleLevelDto> permissionModuleListToTree(List<PermissionModuleLevelDto> dtoList) {
+        if(CollectionUtils.isEmpty(dtoList)) {
+            return Lists.newArrayList();
+        }
+        //level -> [permissionModule1, permissionModule2, ...] Map<String, List<Object>>
+        Multimap<String, PermissionModuleLevelDto> levelPermissionModuleMap = ArrayListMultimap.create();
+        List<PermissionModuleLevelDto> rootList = Lists.newArrayList();
+
+        for(PermissionModuleLevelDto dto : dtoList) {
+            levelPermissionModuleMap.put(dto.getPermissionModuleLevel(), dto);
+            if(LevelUtil.ROOT.equals(dto.getPermissionModuleLevel()))
+                rootList.add(dto);
+        }
+        // 按照seq从小到大排序
+        Collections.sort(rootList, permissionModuleSeqComparator);
+        transformPermissionModuleTree(rootList, LevelUtil.ROOT, levelPermissionModuleMap);
+        return rootList;
+    }
+
+    // level:0, 0, all 0 -> 0.1, 0.2
+    // level:0.1
+    // level:0.2
+    // iteratively generate the next-level list of permission modules of a particular module
+    public void transformPermissionModuleTree(List<PermissionModuleLevelDto> permissionModuleLevelList,
+                                              String level, Multimap<String, PermissionModuleLevelDto> levelPermissionModuleMap) {
+        for(int i = 0; i < permissionModuleLevelList.size(); i++) {
+            PermissionModuleLevelDto dto = permissionModuleLevelList.get(i);
+            String nextLevel = LevelUtil.calculateLevel(level, dto.getId());
+            List<PermissionModuleLevelDto> tempList = (List<PermissionModuleLevelDto>) levelPermissionModuleMap.get(nextLevel);
+            if(CollectionUtils.isNotEmpty(tempList)) {
+                Collections.sort(tempList, permissionModuleSeqComparator);
+                dto.setPermissionModuleList(tempList);
+                transformPermissionModuleTree(tempList, nextLevel, levelPermissionModuleMap);
+            }
+        }
+    }
+
+
+    // generate department tree
     public List<DeptLevelDto> deptTree() {
         List<SysDept> deptList = sysDeptMapper.getAllDept();
         List<DeptLevelDto> dtoList = Lists.newArrayList();
@@ -62,12 +122,7 @@ public class SysTreeService {
         }
 
         // 按照seq从小到大排序
-        Collections.sort(rootList, new Comparator<DeptLevelDto>() {
-            @Override
-            public int compare(DeptLevelDto o1, DeptLevelDto o2) {
-                return o1.getDeptSeq() - o2.getDeptSeq();
-            }
-        });
+        Collections.sort(rootList, deptSeqComparator);
         // generate department tree via recursion
         transformDeptTree(deptLevelList, LevelUtil.ROOT, levelDeptMap);
         return rootList;

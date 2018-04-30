@@ -192,4 +192,11 @@
       AND id != #{id}
     </if>
   </select>
+  
+  <select id="getAllPermissionModule" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM mmall_sys_permission_module
+  </select>
+  
 </mapper>

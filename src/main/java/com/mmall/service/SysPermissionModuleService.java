@@ -40,6 +40,7 @@ public class SysPermissionModuleService {
                 .permissionModuleSeq(param.getPermissionModuleSeq())
                 .permissionModuleStatus(param.getPermissionModuleStatus())
                 .remark(param.getRemark()).build();
+        permissionModule.setPermissionModuleLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()), param.getParentId()));
         permissionModule.setOperator(RequestHolder.getCurrentUser().getUserName());
         permissionModule.setOperatorIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         Date now = new Date();
