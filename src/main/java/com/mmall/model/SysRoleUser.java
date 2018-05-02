@@ -1,7 +1,14 @@
 package com.mmall.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SysRoleUser {
     private Integer id;
 
@@ -17,19 +24,6 @@ public class SysRoleUser {
 
     private String operatorIp;
 
-    public SysRoleUser(Integer id, Integer roleId, Integer userId, String operator, Date createTime, Date operateTime, String operatorIp) {
-        this.id = id;
-        this.roleId = roleId;
-        this.userId = userId;
-        this.operator = operator;
-        this.createTime = createTime;
-        this.operateTime = operateTime;
-        this.operatorIp = operatorIp;
-    }
-
-    public SysRoleUser() {
-        super();
-    }
 
     public Integer getId() {
         return id;

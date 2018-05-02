@@ -4,20 +4,21 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.mmall.dao.SysDeptMapper;
+import com.mmall.dao.SysPermissionMapper;
 import com.mmall.dao.SysPermissionModuleMapper;
 import com.mmall.dto.DeptLevelDto;
+import com.mmall.dto.PermissionDto;
 import com.mmall.dto.PermissionModuleLevelDto;
 import com.mmall.model.SysDept;
+import com.mmall.model.SysPermission;
 import com.mmall.model.SysPermissionModule;
 import com.mmall.util.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * permission
@@ -34,6 +35,12 @@ public class SysTreeService {
     @Resource
     private SysPermissionModuleMapper sysPermissionModuleMapper;
 
+    @Resource
+    private SysCoreService sysCoreService;
+
+    @Resource
+    private SysPermissionMapper sysPermissionMapper;
+
     // department comparator based on sequence
     private Comparator<DeptLevelDto> deptSeqComparator = new Comparator<DeptLevelDto>() {
         @Override
@@ -49,6 +56,91 @@ public class SysTreeService {
             return o1.getPermissionModuleSeq() - o2.getPermissionModuleSeq();
         }
     };
+
+    // permission dto comparator based on sequence
+    private Comparator<PermissionDto> permissionSeqComparator = new Comparator<PermissionDto>() {
+        @Override
+        public int compare(PermissionDto o1, PermissionDto o2) {
+            return o1.getPermissionSeq() - o2.getPermissionSeq();
+        }
+    };
+
+    public List<PermissionModuleLevelDto> userPermissionTree(int userId) {
+        List<SysPermission> userPermissionList = sysCoreService.getUserPermissionList(userId);
+        List<PermissionDto> permissionDtoList = Lists.newArrayList();
+        for(SysPermission permission : userPermissionList) {
+            PermissionDto dto = PermissionDto.adapt(permission);
+            dto.setHasPermission(true);
+            dto.setChecked(true);
+            permissionDtoList.add(dto);
+        }
+        return permissionListToTree(permissionDtoList);
+    }
+
+    public List<PermissionModuleLevelDto> roleTree(int roleId) {
+        // 1. the permissions assigned to the current user
+        List<SysPermission> userPermissionList = sysCoreService.getCurrentUserPermissionList();
+        // 2. the permissions assigned to the current role
+        List<SysPermission> rolePermissionList = sysCoreService.getRolePermissionList(roleId);
+        // 3. all the permissions in the system
+        List<PermissionDto> permissionDtoList = Lists.newArrayList();
+        List<SysPermission> allPermissionsList = sysPermissionMapper.getAllPermissions();
+
+
+        Set<Integer> userPermissionIdSet = userPermissionList.stream()
+                .map(sysPermission -> sysPermission.getId()).collect(Collectors.toSet());
+        Set<Integer> rolePermissionIdSet = rolePermissionList.stream()
+                .map(sysPermission -> sysPermission.getId()).collect(Collectors.toSet());
+
+
+        for(SysPermission permission : allPermissionsList) {
+            PermissionDto dto = PermissionDto.adapt(permission);
+            if(userPermissionIdSet.contains(permission.getId())) {
+                dto.setHasPermission(true);
+            }
+            if(rolePermissionIdSet.contains(permission.getId())) {
+                dto.setChecked(true);
+            }
+            permissionDtoList.add(dto);
+        }
+        return permissionListToTree(permissionDtoList);
+    }
+
+    public List<PermissionModuleLevelDto> permissionListToTree(List<PermissionDto> permissionDtoList) {
+        if(CollectionUtils.isEmpty(permissionDtoList)) {
+            return Lists.newArrayList();
+        }
+
+        // permission module tree
+        List<PermissionModuleLevelDto> permissionModuleLevelDtoList = permissionModuleTree();
+
+        // permission module id -> permission 1, permission 2, etc
+        Multimap<Integer, PermissionDto> modulePermissionMap = ArrayListMultimap.create();
+        for(PermissionDto permissionDto : permissionDtoList) {
+            if(permissionDto.getPermissionStatus() == 1) {
+                modulePermissionMap.put(permissionDto.getPermissionModuleId(), permissionDto);
+            }
+        }
+
+        bindPermissionsWithOrder(permissionModuleLevelDtoList, modulePermissionMap);
+        return permissionModuleLevelDtoList;
+    }
+
+    // recursive add bind permissions to the corresponding permission module
+    public void bindPermissionsWithOrder(List<PermissionModuleLevelDto> permissionModuleLevelDtoList,
+                                         Multimap<Integer, PermissionDto> modulePermissionMap) {
+        if(CollectionUtils.isEmpty(permissionModuleLevelDtoList)) {
+            return;
+        }
+        for(PermissionModuleLevelDto dto : permissionModuleLevelDtoList) {
+            List<PermissionDto> permissionDtoList = (List<PermissionDto>) modulePermissionMap.get(dto.getId());
+            if(CollectionUtils.isNotEmpty(permissionDtoList)) {
+                Collections.sort(permissionDtoList, permissionSeqComparator);
+                dto.setPermissionList(permissionDtoList);
+            }
+            bindPermissionsWithOrder(dto.getPermissionModuleList(), modulePermissionMap);
+        }
+    }
 
     // generate permission module tree
     public List<PermissionModuleLevelDto> permissionModuleTree() {

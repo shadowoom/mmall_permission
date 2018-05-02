@@ -18,7 +18,7 @@
         </button>
 
         <div class="navbar-header pull-left">
-            <a href="/admin/page.do" class="navbar-brand">
+            <a href="/admin/index.page" class="navbar-brand">
                 <small>
                     <i class="fa fa-leaf"></i>
                     管理员控制台
@@ -81,7 +81,7 @@
 
         <ul class="nav nav-list">
             <li class="active">
-                <a class="popstyle" href="/sys/user/page.do" target="_blank">
+                <a class="popstyle" href="/sys/dept/dept.page" target="_blank">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text"> 首页 </span>
                 </a>

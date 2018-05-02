@@ -116,4 +116,37 @@
       operator_ip = #{operatorIp,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getPermissionIdListByRoleIdList" parameterType="map" resultType="java.lang.Integer">
+    SELECT permission_id
+      FROM mmall_sys_role_permission
+    WHERE role_id IN
+      <foreach collection="roleIdList" item="roleId" open="(" close=")" separator=",">
+        #{roleId}
+      </foreach>
+  </select>
+
+  <delete id="deleteByRoleId" parameterType="int">
+    DELETE
+      FROM mmall_sys_role_permission
+    WHERE role_id = #{roleId}
+  </delete>
+
+  <insert id="batchInsert" parameterType="map">
+    insert into mmall_sys_role_permission (role_id, permission_id,
+      operator, create_time, operate_time, operator_ip)
+    values
+    <foreach collection="rolePermissionList" item="rolePermission" separator=",">
+    (#{rolePermission.roleId}, #{rolePermission.permissionId},
+      #{rolePermission.operator}, #{rolePermission.createTime}, #{rolePermission.operateTime},
+      #{rolePermission.operatorIp})
+    </foreach>
+  </insert>
+
+  <select id="getRoleIdListByPermissionId" parameterType="int" resultType="java.lang.Integer">
+    SELECT role_id
+    FROM mmall_sys_role_permission
+    WHERE permission_id = #{permissionId}
+  </select>
+
 </mapper>

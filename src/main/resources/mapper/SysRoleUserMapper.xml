@@ -116,4 +116,42 @@
       operator_ip = #{operatorIp,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getRoleIdListByUserId" parameterType="map" resultType="java.lang.Integer">
+    SELECT role_id
+      FROM mmall_sys_role_user
+    WHERE user_id = #{userId}
+  </select>
+
+  <select id="getUserIdListByRoleId" parameterType="map" resultType="java.lang.Integer">
+    SELECT user_id
+      FROM mmall_sys_role_user
+    WHERE role_id = #{roleId}
+  </select>
+
+  <delete id="deleteByRoleId" parameterType="int">
+    DELETE
+    FROM mmall_sys_role_user
+    WHERE role_id = #{roleId}
+  </delete>
+
+  <insert id="batchInsert" parameterType="map">
+    insert into mmall_sys_role_user (role_id, user_id,
+    operator, create_time, operate_time, operator_ip)
+    values
+    <foreach collection="roleUserList" item="roleUser" separator=",">
+      (#{roleUser.roleId}, #{roleUser.userId},
+      #{roleUser.operator}, #{roleUser.createTime}, #{roleUser.operateTime}, #{roleUser.operatorIp})
+    </foreach>
+  </insert>
+
+  <select id="getUserIdListByRoleIdList" parameterType="map" resultType="java.lang.Integer">
+    SELECT user_id
+      FROM mmall_sys_role_user
+    WHERE role_id IN
+    <foreach collection="roleIdList" item="roleId" open="(" close=")" separator=",">
+      #{roleId}
+    </foreach>
+  </select>
+
 </mapper>

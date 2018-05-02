@@ -27,4 +27,8 @@ public interface SysPermissionMapper {
     int countByNameAndPermissionModuleId(@Param("permissionModuleId") int permissionModuleId,
                                          @Param("permissionName") String permissionName, @Param("id") Integer id);
 
+    List<SysPermission> getAllPermissions();
+
+    List<SysPermission> getByIdList(@Param("idList") List<Integer> idList);
+
 }

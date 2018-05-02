@@ -3,6 +3,7 @@ package com.mmall.service;
 import com.google.common.base.Preconditions;
 import com.mmall.common.RequestHolder;
 import com.mmall.dao.SysDeptMapper;
+import com.mmall.dao.SysUserMapper;
 import com.mmall.exception.ParamException;
 import com.mmall.model.SysDept;
 import com.mmall.param.DeptParam;
@@ -29,6 +30,9 @@ public class SysDeptService {
 
     @Resource
     private SysDeptMapper sysDeptMapper;
+
+    @Resource
+    private SysUserMapper sysUserMapper;
 
     public void save(DeptParam param) {
         BeanValidator.check(param);
@@ -64,7 +68,7 @@ public class SysDeptService {
     }
 
     @Transactional
-    private void updateWithChild(SysDept deptBeforeUpdate, SysDept deptAfterUpdate) {
+    void updateWithChild(SysDept deptBeforeUpdate, SysDept deptAfterUpdate) {
         String newLevelPrefix = deptAfterUpdate.getDeptLevel();
         String preLevelPrefix = deptBeforeUpdate.getDeptLevel();
         if(!newLevelPrefix .equals(preLevelPrefix)) {
@@ -92,5 +96,17 @@ public class SysDeptService {
         if(dept == null)
             return null;
         return dept.getDeptLevel();
+    }
+
+    public void delete(int deptId) {
+        SysDept dept = sysDeptMapper.selectByPrimaryKey(deptId);
+        Preconditions.checkNotNull(dept, "待删除的部门不存在，无法删除");
+        if(sysDeptMapper.countByParentId(deptId) > 0) {
+            throw new ParamException("当前部门下面有子部门，无法删除");
+        }
+        if(sysUserMapper.countByDeptId(deptId) > 0) {
+            throw new ParamException("当前部门下面存在用户，无法删除");
+        }
+        sysDeptMapper.deleteByPrimaryKey(deptId);
     }
 }

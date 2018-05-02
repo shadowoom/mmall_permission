@@ -47,7 +47,7 @@ public class PermissionParam {
     @NotNull(message = "必须指定权限点的展示顺序")
     private Integer permissionSeq;
 
-    @Length(min = 0, max = 200, message = "权限点URL长度需要在200个字符以内")
+    @Length(min = 0, max = 200, message = "权限点备注长度需要在200个字符以内")
     private String remark;
 
 }

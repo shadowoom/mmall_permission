@@ -188,7 +188,7 @@
             <a class="green user-edit" href="#" data-id="{{id}}">
                 <i class="ace-icon fa fa-pencil bigger-100"></i>
             </a>
-            <a class="red user-acl" href="#" data-id="{{id}}">
+            <a class="red user-permission" href="#" data-id="{{id}}">
                 <i class="ace-icon fa fa-flag bigger-100"></i>
             </a>
         </div>
@@ -260,8 +260,21 @@
                 var deptId = $(this).attr("data-id");
                 var deptName = $(this).attr("data-name");
                 if (confirm("确定要删除部门[" + deptName + "]吗?")) {
-                    //TODO:
-                    console.log("delete dept: " + deptName);
+                    $.ajax({
+                        url: "/sys/dept/delete.json",
+                        data: {
+                            id: deptId
+                        },
+                        success: function (result) {
+                            if(result.ret) {
+                                showMessage("删除部门["+ deptName+ "]", "操作成功", true);
+                                loadDeptTree();
+;                            }
+                            else{
+                                showMessage("删除部门["+ deptName+ "]", result.msg, true);
+                            }
+                        }
+                    });
                 }
             });
 
@@ -405,6 +418,25 @@
         });
 
         function bindUserClick() {
+            $(".user-permission").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var userId = $(this).attr("data-id");
+                $.ajax({
+                    url: "/sys/user/permissionAndRole.json",
+                    data: {
+                        userId: userId
+                    },
+                    success: function(result) {
+                        if (result.ret) {
+                            console.log(result);
+                        } else {
+                            showMessage("获取用户权限数据", result.msg, false);
+                        }
+                    }
+                });
+            });
+
             $(".user-edit").click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();

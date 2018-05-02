@@ -198,5 +198,11 @@
     <include refid="Base_Column_List" />
     FROM mmall_sys_permission_module
   </select>
+
+  <select id="countByParentId" parameterType="int" resultType="java.lang.Integer">
+    SELECT COUNT(1)
+    FROM mmall_sys_permission_module
+    WHERE parent_id = #{permissionModuleId}
+  </select>
   
 </mapper>

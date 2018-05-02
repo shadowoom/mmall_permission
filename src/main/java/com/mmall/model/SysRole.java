@@ -1,7 +1,15 @@
 package com.mmall.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SysRole {
     private Integer id;
 
@@ -10,6 +18,8 @@ public class SysRole {
     private Integer roleType;
 
     private Integer roleStatus;
+
+    private Integer roleSeq;
 
     private String remark;
 
@@ -20,22 +30,6 @@ public class SysRole {
     private Date operateTime;
 
     private String operatorIp;
-
-    public SysRole(Integer id, String roleName, Integer roleType, Integer roleStatus, String remark, String operator, Date createTime, Date operateTime, String operatorIp) {
-        this.id = id;
-        this.roleName = roleName;
-        this.roleType = roleType;
-        this.roleStatus = roleStatus;
-        this.remark = remark;
-        this.operator = operator;
-        this.createTime = createTime;
-        this.operateTime = operateTime;
-        this.operatorIp = operatorIp;
-    }
-
-    public SysRole() {
-        super();
-    }
 
     public Integer getId() {
         return id;
@@ -67,6 +61,14 @@ public class SysRole {
 
     public void setRoleStatus(Integer roleStatus) {
         this.roleStatus = roleStatus;
+    }
+
+    public Integer getRoleSeq() {
+        return roleSeq;
+    }
+
+    public void setRoleSeq(Integer roleSeq) {
+        this.roleSeq = roleSeq;
     }
 
     public String getRemark() {

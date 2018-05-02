@@ -25,4 +25,6 @@ public interface SysPermissionModuleMapper {
     int countByNameAndParentId(@Param("parentId")Integer parentId, @Param("permissionModuleName")String permissionModuleName, @Param("id")Integer id);
 
     List<SysPermissionModule> getAllPermissionModule();
+
+    int countByParentId(@Param("permissionModuleId") int permissionModuleId);
 }

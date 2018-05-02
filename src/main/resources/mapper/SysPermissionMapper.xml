@@ -188,7 +188,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="countByNameAndPermissionModuleId" parameterType="map" resultType="int">
+  <select id="countByNameAndPermissionModuleId" parameterType="map" resultType="java.lang.Integer">
     SELECT COUNT(1)
     FROM mmall_sys_permission
     WHERE permission_module_id =  #{permissionModuleId}
@@ -198,7 +198,7 @@
     </if>
   </select>
   
-  <select id="countByPermissionModuleId" parameterType="map" resultType="int">
+  <select id="countByPermissionModuleId" parameterType="map" resultType="java.lang.Integer">
     SELECT COUNT(1)
     FROM mmall_sys_permission
     WHERE permission_module_id =  #{permissionModuleId}
@@ -212,5 +212,19 @@
     ORDER BY permission_seq ASC, permission_name ASC
     limit #{page.offset}, #{page.pageSize}
   </select>
-  
+
+  <select id="getAllPermissions" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM mmall_sys_permission
+  </select>
+
+  <select id="getByIdList" parameterType="map" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM mmall_sys_permission
+    WHERE id IN
+    <foreach collection="idList" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </select>
+
 </mapper>

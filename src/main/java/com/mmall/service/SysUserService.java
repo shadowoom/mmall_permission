@@ -1,19 +1,24 @@
 package com.mmall.service;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.mmall.beans.Mail;
 import com.mmall.beans.PageQuery;
 import com.mmall.beans.PageResult;
 import com.mmall.common.RequestHolder;
+import com.mmall.dao.SysRoleUserMapper;
 import com.mmall.dao.SysUserMapper;
 import com.mmall.exception.ParamException;
+import com.mmall.model.SysRole;
 import com.mmall.model.SysUser;
 import com.mmall.param.UserParam;
 import com.mmall.util.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * permission
@@ -27,6 +32,9 @@ public class SysUserService {
 
     @Resource
     private SysUserMapper sysUserMapper;
+
+    @Resource
+    private SysRoleUserMapper sysRoleUserMapper;
 
     public void save(UserParam param) {
         BeanValidator.check(param);
@@ -108,6 +116,23 @@ public class SysUserService {
             return PageResult.<SysUser>builder().data(userList).total(count).build();
         }
         return PageResult.<SysUser>builder().build();
+    }
+
+    public List<SysUser> getAllUsers() {
+        return sysUserMapper.getAllUsers();
+    }
+
+    public List<SysUser> getUserListByRoleList(List<SysRole> roleList) {
+        if(CollectionUtils.isEmpty(roleList)) {
+            return Lists.newArrayList();
+        }
+        List<Integer> roleIdList = roleList.stream()
+                .map(sysRole -> sysRole.getId()).collect(Collectors.toList());
+        List<Integer> userIdList = sysRoleUserMapper.getUserIdListByRoleIdList(roleIdList);
+        if(CollectionUtils.isEmpty(userIdList)) {
+            return Lists.newArrayList();
+        }
+        return sysUserMapper.getUsersByIdList(userIdList);
     }
 
 }

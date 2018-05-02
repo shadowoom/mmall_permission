@@ -2,6 +2,7 @@ package com.mmall.service;
 
 import com.google.common.base.Preconditions;
 import com.mmall.common.RequestHolder;
+import com.mmall.dao.SysPermissionMapper;
 import com.mmall.dao.SysPermissionModuleMapper;
 import com.mmall.exception.ParamException;
 import com.mmall.model.SysPermissionModule;
@@ -28,6 +29,9 @@ public class SysPermissionModuleService {
 
     @Resource
     private SysPermissionModuleMapper sysPermissionModuleMapper;
+
+    @Resource
+    private SysPermissionMapper sysPermissionMapper;
 
     public void save(PermissionModuleParam param) {
         BeanValidator.check(param);
@@ -73,8 +77,8 @@ public class SysPermissionModuleService {
     }
 
     @Transactional
-    private void updateWithChild(SysPermissionModule moduleBeforeUpdate,
-                                 SysPermissionModule moduleAfterUpdate) {
+    void updateWithChild(SysPermissionModule moduleBeforeUpdate,
+                         SysPermissionModule moduleAfterUpdate) {
         String newLevelPrefix = moduleAfterUpdate.getPermissionModuleLevel();
         String preLevelPrefix = moduleBeforeUpdate.getPermissionModuleLevel();
         if(!newLevelPrefix .equals(preLevelPrefix)) {
@@ -103,6 +107,18 @@ public class SysPermissionModuleService {
         if(permissionModule == null)
             return null;
         return permissionModule.getPermissionModuleLevel();
+    }
+
+    public void delete(int permissionModuleId) {
+        SysPermissionModule permissionModule = sysPermissionModuleMapper.selectByPrimaryKey(permissionModuleId);
+        Preconditions.checkNotNull(permissionModule, "待删除的权限模块不存在，无法删除");
+        if(sysPermissionModuleMapper.countByParentId(permissionModuleId) > 0) {
+            throw new ParamException("当前权限模块下面有子模块，无法删除");
+        }
+        if(sysPermissionMapper.countByPermissionModuleId(permissionModuleId) > 0) {
+            throw new ParamException("当前权限模块下面存在权限点，无法删除");
+        }
+        sysPermissionModuleMapper.deleteByPrimaryKey(permissionModuleId);
     }
 
 }

@@ -393,6 +393,30 @@
                 handlePermissionModuleSelected(permissionModuleId);
             });
 
+            $(".permissionModule-delete").click(function (e) {
+               e.preventDefault();
+               e.stopPropagation();
+               var permissionModuleId = $(this).attr("data-id");
+               var permissionModuleName = $(this).attr("data-name");
+               if(confirm("确定要删除权限模块[" + permissionModuleName + "]吗?")) {
+                   $.ajax({
+                       url: "/sys/permissionModule/delete.json",
+                       data: {
+                           id: permissionModuleId
+                       },
+                       success: function (result) {
+                           if(result.ret) {
+                               showMessage("删除权限模块[" + permissionModuleName + "]", "操作成功", true);
+                               loadPermissionModuleTree();
+                           }
+                           else {
+                               showMessage("删除权限模块[" + permissionModuleName + "]", result.msg, false);
+                           }
+                       }
+                   });
+               }
+            });
+
         }
 
         // update or create a permission module
@@ -491,6 +515,25 @@
         }
         
         function bindPermisionClick() {
+            $(".permission-role").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var permissionId =  $(this).attr("data-id");
+                $.ajax({
+                    url: "/sys/permission/roleAndUser.json",
+                    data: {
+                        permissionId: permissionId
+                    },
+                    success: function(result) {
+                        if (result.ret) {
+                            console.log(result);
+                        } else {
+                            showMessage("获取权限点分配的用户和角色数据", result.msg, false);
+                        }
+                    }
+                });
+            });
+
             $(".permission-edit").click(function (e) {
                 e.preventDefault();
                 e.stopPropagation();

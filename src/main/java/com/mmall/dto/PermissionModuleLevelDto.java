@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.beans.BeanUtils;
 
+import java.security.Permission;
 import java.util.List;
 
 /**
@@ -22,6 +23,8 @@ import java.util.List;
 public class PermissionModuleLevelDto extends SysPermissionModule {
 
     private List<PermissionModuleLevelDto> permissionModuleList = Lists.newArrayList();
+
+    private List<PermissionDto> permissionList = Lists.newArrayList();
 
     public static PermissionModuleLevelDto adapt(SysPermissionModule sysPermissionModule) {
         PermissionModuleLevelDto dto = new PermissionModuleLevelDto();
