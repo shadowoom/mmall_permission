@@ -90,6 +90,26 @@
     <url-pattern>/sys/*</url-pattern>
     <url-pattern>/admin/*</url-pattern>
   </filter-mapping>
+
+  <!-- the urls filtered should be less or equal than those of login filter -->
+  <filter>
+    <filter-name>PermissionControlFilter</filter-name>
+    <filter-class>com.mmall.filter.PermissionControlFilter</filter-class>
+    <init-param>
+      <param-name>targetFilterLifeCycle</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>exclusionUrls</param-name>
+      <param-value>/sys/user/noAuth.page,/login.page</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>PermissionControlFilter</filter-name>
+    <url-pattern>/sys/*</url-pattern>
+    <url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
   
   <!-- Welcome -->
   <welcome-file-list>

@@ -31,4 +31,6 @@ public interface SysPermissionMapper {
 
     List<SysPermission> getByIdList(@Param("idList") List<Integer> idList);
 
+    List<SysPermission> getPermissionsByUrl(@Param("url") String url);
+
 }

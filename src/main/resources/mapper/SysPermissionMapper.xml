@@ -227,4 +227,10 @@
     </foreach>
   </select>
 
+  <select id="getPermissionsByUrl" parameterType="string" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+      FROM mmall_sys_permission
+    WHERE permission_url = #{url} <!-- url is not null and url != '' and #{url} REGEXP url -->
+  </select>
+
 </mapper>
