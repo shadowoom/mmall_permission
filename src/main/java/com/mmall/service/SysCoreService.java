@@ -2,13 +2,17 @@ package com.mmall.service;
 
 
 import com.google.common.collect.Lists;
+import com.mmall.beans.CacheKeyConstants;
 import com.mmall.common.RequestHolder;
 import com.mmall.dao.SysPermissionMapper;
 import com.mmall.dao.SysRolePermissionMapper;
 import com.mmall.dao.SysRoleUserMapper;
 import com.mmall.model.SysPermission;
 import com.mmall.model.SysUser;
+import com.mmall.util.JsonMapper;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,6 +31,9 @@ public class SysCoreService {
 
     @Resource
     private SysRolePermissionMapper sysRolePermissionMapper;
+
+    @Resource
+    private SysCacheService sysCacheService;
 
     public List<SysPermission> getCurrentUserPermissionList() {
         int userId = RequestHolder.getCurrentUser().getId();
@@ -79,7 +86,7 @@ public class SysCoreService {
             return true;
         }
 
-        List<SysPermission> userPermissionList = getCurrentUserPermissionList();
+        List<SysPermission> userPermissionList = getCurrentUserPermissionListFromCache();
         Set<Integer> userPermissionIdSet = userPermissionList.stream()
                 .map(permission -> permission.getId()).collect(Collectors.toSet());
         boolean hasValidPermission = false;
@@ -99,6 +106,21 @@ public class SysCoreService {
             return true;
         }
         return false;
+    }
+
+    public List<SysPermission>  getCurrentUserPermissionListFromCache() {
+        int userId = RequestHolder.getCurrentUser().getId();
+        String cacheValue = sysCacheService.getFromCache(CacheKeyConstants.USER_PERMISSIONS,
+                String.valueOf(userId));
+        if(StringUtils.isBlank(cacheValue)) {
+            List<SysPermission> permissionList = getCurrentUserPermissionList();
+            if(CollectionUtils.isNotEmpty(permissionList)) {
+                sysCacheService.saveToCache(JsonMapper.obj2String(permissionList),
+                        600, CacheKeyConstants.USER_PERMISSIONS, String.valueOf(userId));
+                return permissionList;
+            }
+        }
+        return JsonMapper.string2Obj(cacheValue, new TypeReference<List<SysPermission>>() {});
     }
 
 }
