@@ -43,7 +43,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{operateTime,jdbcType=TIMESTAMP}, #{operatorIp,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.mmall.model.SysUser" >
+  <insert id="insertSelective" parameterType="com.mmall.model.SysUser" keyProperty="id" useGeneratedKeys="true">
     insert into mmall_sys_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

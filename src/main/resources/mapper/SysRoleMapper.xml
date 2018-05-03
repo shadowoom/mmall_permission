@@ -40,7 +40,7 @@
       #{operatorIp,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.mmall.model.SysRole" >
+  <insert id="insertSelective" parameterType="com.mmall.model.SysRole" keyProperty="id" useGeneratedKeys="true">
     insert into mmall_sys_role
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

@@ -42,7 +42,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{operateTime,jdbcType=TIMESTAMP}, #{operatorIp,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.mmall.model.SysPermissionModule" >
+  <insert id="insertSelective" parameterType="com.mmall.model.SysPermissionModule" keyProperty="id" useGeneratedKeys="true">
     insert into mmall_sys_permission_module
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

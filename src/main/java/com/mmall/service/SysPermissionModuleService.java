@@ -33,6 +33,9 @@ public class SysPermissionModuleService {
     @Resource
     private SysPermissionMapper sysPermissionMapper;
 
+    @Resource
+    private SysLogService sysLogService;
+
     public void save(PermissionModuleParam param) {
         BeanValidator.check(param);
         if(checkExist(param.getParentId(), param.getPermissionModuleName(), param.getId())) {
@@ -51,6 +54,7 @@ public class SysPermissionModuleService {
         permissionModule.setCreateTime(now);
         permissionModule.setOperateTime(now);
         sysPermissionModuleMapper.insertSelective(permissionModule);
+        sysLogService.savePermissionModuleLog(null, permissionModule);
     }
 
     public void update(PermissionModuleParam param) {
@@ -74,6 +78,7 @@ public class SysPermissionModuleService {
         Date now = new Date();
         moduleAfterUpdate.setOperateTime(now);
         updateWithChild(moduleBeforeUpdate, moduleAfterUpdate);
+        sysLogService.savePermissionModuleLog(moduleBeforeUpdate, moduleAfterUpdate);
     }
 
     @Transactional

@@ -1,7 +1,14 @@
 package com.mmall.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SysLog {
     private Integer id;
 
@@ -18,21 +25,6 @@ public class SysLog {
     private Date operateTime;
 
     private String operatorIp;
-
-    public SysLog(Integer id, Integer type, Integer targetId, Integer status, String operator, Date createTime, Date operateTime, String operatorIp) {
-        this.id = id;
-        this.type = type;
-        this.targetId = targetId;
-        this.status = status;
-        this.operator = operator;
-        this.createTime = createTime;
-        this.operateTime = operateTime;
-        this.operatorIp = operatorIp;
-    }
-
-    public SysLog() {
-        super();
-    }
 
     public Integer getId() {
         return id;

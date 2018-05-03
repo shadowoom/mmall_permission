@@ -30,6 +30,9 @@ public class SysPermissionService {
     @Resource
     private SysPermissionMapper sysPermissionMapper;
 
+    @Resource
+    private SysLogService sysLogService;
+
     public void save(PermissionParam param) {
         BeanValidator.check(param);
         if(checkExist(param.getPermissionModuleId(), param.getPermissionName(), param.getId())) {
@@ -50,6 +53,7 @@ public class SysPermissionService {
         permission.setCreateTime(now);
         permission.setOperateTime(now);
         sysPermissionMapper.insertSelective(permission);
+        sysLogService.savePermissionLog(null, permission);
     }
 
     public void update(PermissionParam param) {
@@ -73,6 +77,7 @@ public class SysPermissionService {
         Date now = new Date();
         permissionAfterUpdate.setOperateTime(now);
         sysPermissionMapper.updateByPrimaryKeySelective(permissionAfterUpdate);
+        sysLogService.savePermissionLog(permissionBeforeUpdate, permissionAfterUpdate);
     }
 
     public boolean checkExist(int permissionModuleId, String name, Integer id) {

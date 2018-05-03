@@ -31,6 +31,9 @@ public class SysRoleService {
     @Resource
     private SysRolePermissionMapper sysRolePermissionMapper;
 
+    @Resource
+    private SysLogService sysLogService;
+
     public void save(RoleParam param) {
         BeanValidator.check(param);
         if(checkExist(param.getRoleName(), param.getId())) {
@@ -47,6 +50,7 @@ public class SysRoleService {
         role.setCreateTime(now);
         role.setOperateTime(now);
         sysRoleMapper.insertSelective(role);
+        sysLogService.saveRoleLog(null, role);
     }
 
     public void update(RoleParam param) {
@@ -67,6 +71,7 @@ public class SysRoleService {
         Date now = new Date();
         roleAfterUpdate.setOperateTime(now);
         sysRoleMapper.updateByPrimaryKeySelective(roleAfterUpdate);
+        sysLogService.saveRoleLog(roleBeforeUpdate, roleAfterUpdate);
     }
 
     public List<SysRole> getAllRoles() {

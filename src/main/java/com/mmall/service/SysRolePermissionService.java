@@ -2,10 +2,15 @@ package com.mmall.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.mmall.beans.LogType;
 import com.mmall.common.RequestHolder;
+import com.mmall.dao.SysLogMapper;
 import com.mmall.dao.SysRolePermissionMapper;
+import com.mmall.model.SysLogWithBLOBs;
+import com.mmall.model.SysPermissionModule;
 import com.mmall.model.SysRolePermission;
 import com.mmall.util.IpUtil;
+import com.mmall.util.JsonMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +26,10 @@ public class SysRolePermissionService {
     @Resource
     private SysRolePermissionMapper sysRolePermissionMapper;
 
+
+    @Resource
+    private SysLogMapper sysLogMapper;
+
     public void changeRolePermissions(Integer roleId, List<Integer> permissionIdList) {
         List<Integer> originalPermissionIdList =
                 sysRolePermissionMapper.getPermissionIdListByRoleIdList(Lists.newArrayList(roleId));
@@ -33,10 +42,11 @@ public class SysRolePermissionService {
             }
         }
         updateRolePermissions(roleId, permissionIdList);
+        saveRolePermissionLog(roleId, originalPermissionIdList, permissionIdList);
     }
 
     @Transactional
-    private void updateRolePermissions(int roleId, List<Integer> permissionIdList) {
+    void updateRolePermissions(int roleId, List<Integer> permissionIdList) {
         sysRolePermissionMapper.deleteByRoleId(roleId);
         if(CollectionUtils.isEmpty(permissionIdList)){
             return;
@@ -55,6 +65,21 @@ public class SysRolePermissionService {
         }
         sysRolePermissionMapper.batchInsert(rolePermissionList);
 
+    }
+
+    private void saveRolePermissionLog(int roleId, List<Integer> before, List<Integer> after) {
+        SysLogWithBLOBs sysLog = new SysLogWithBLOBs();
+        sysLog.setType(LogType.TYPE_ROLE_PERMISSION);
+        sysLog.setTargetId(roleId);
+        sysLog.setOldValue(before == null ? "" : JsonMapper.obj2String(before));
+        sysLog.setNewValue(after == null ? "" : JsonMapper.obj2String(after));
+        sysLog.setOperator(RequestHolder.getCurrentUser().getUserName());
+        sysLog.setOperatorIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
+        Date date = new Date();
+        sysLog.setCreateTime(date);
+        sysLog.setOperateTime(date);
+        sysLog.setStatus(1);
+        sysLogMapper.insertSelective(sysLog);
     }
 
 }

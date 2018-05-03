@@ -9,6 +9,7 @@ import com.mmall.common.RequestHolder;
 import com.mmall.dao.SysRoleUserMapper;
 import com.mmall.dao.SysUserMapper;
 import com.mmall.exception.ParamException;
+import com.mmall.model.SysLog;
 import com.mmall.model.SysRole;
 import com.mmall.model.SysUser;
 import com.mmall.param.UserParam;
@@ -35,6 +36,9 @@ public class SysUserService {
 
     @Resource
     private SysRoleUserMapper sysRoleUserMapper;
+
+    @Resource
+    private SysLogService sysLogService;
 
     public void save(UserParam param) {
         BeanValidator.check(param);
@@ -70,6 +74,7 @@ public class SysUserService {
 //        Mail newMail = Mail.builder().subject("来自www.phaccessory.com的注册密码").message(message).receivers(receivers).build();
 //        MailUtil.send(newMail);
         sysUserMapper.insertSelective(user);
+        sysLogService.saveUserLog(null, user);
     }
 
     public void update(UserParam param) {
@@ -94,6 +99,7 @@ public class SysUserService {
         Date now = new Date();
         userAfterUpdate.setOperateTime(now);
         sysUserMapper.updateByPrimaryKeySelective(userAfterUpdate);
+        sysLogService.saveUserLog(userBeforeUpdate, userAfterUpdate);
     }
 
     public SysUser findUserByKeyword(String keyword) {
