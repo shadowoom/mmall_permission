@@ -117,8 +117,8 @@ public class SysCoreService {
             if(CollectionUtils.isNotEmpty(permissionList)) {
                 sysCacheService.saveToCache(JsonMapper.obj2String(permissionList),
                         600, CacheKeyConstants.USER_PERMISSIONS, String.valueOf(userId));
-                return permissionList;
             }
+            return permissionList;
         }
         return JsonMapper.string2Obj(cacheValue, new TypeReference<List<SysPermission>>() {});
     }
